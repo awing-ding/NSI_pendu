@@ -113,6 +113,7 @@ def ErrorPrinter(errorNumber):
     It takes an integer between 0 and 11, and prints out the corresponding error drawing
     
     :param errorNumber: The drawing corresponding to the number of error to be printed
+    :return type: str The drawing corresponding to the number of error to be printed
     """
 
     worklist = []
@@ -121,7 +122,7 @@ def ErrorPrinter(errorNumber):
     else:
         for line in ERROR_DRAWING[errorNumber]:
             worklist.append(''.join(line))
-        print('\n'.join(worklist))
+        return '\n'.join(worklist)
 
 def FileOpenner(path):
     """
@@ -198,9 +199,10 @@ def printer(usedChar, errorNumber, usedWord, lackingLetter):
     :param errorNumber: the number of errors the player has made
     :param usedWord: the word that is being guessed
     :param lackingLetter: the number of letters that are still missing in the word
+
+    :return: type : str the current state of the game
     """
-    ErrorPrinter(errorNumber)
-    print("Lettres qui ont déjà été dites:", ' '.join(usedChar), '\nmot actuel :', usedWord, '\nnombre de lettre à trouver:', lackingLetter)
+    return (ErrorPrinter(errorNumber) + "\nLettres qui ont déjà été dites:" + ' '.join(usedChar) + '\nmot actuel :' + usedWord + '\nnombre de lettre à trouver:' + lackingLetter)
 
 def game(wordList):
     """
@@ -213,13 +215,13 @@ def game(wordList):
     lackingLetter = lackingLetterCounter(var['workWord'])
     while True:
         system(COMMAND)
-        printer(usedChar, var['errorNumber'], var['workWord'], lackingLetter)
+        print(printer(usedChar, var['errorNumber'], var['workWord'], lackingLetter))
         letter = input("Quelle lettre pensez vous être dans le mot ?\n").upper()
         usedChar.append(letter)
         if not letter in var['word'].upper(): #checks if the letter is in the word
             var['errorNumber'] += 1 #if not, it adds one to the error counter
             if var['errorNumber'] >= 11: #if the error counter is 11 or more, the player loses
-                ErrorPrinter(var['errorNumber'])
+                print(ErrorPrinter(var['errorNumber']))
                 print("vous avez perdu cette partie !\n le mot était: ", var['word'])
                 return (0, var['wordList'])
         elif len(letter) == 1: #prevents the user from entering more than one letter
