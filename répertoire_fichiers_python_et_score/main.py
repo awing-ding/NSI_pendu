@@ -1,17 +1,16 @@
-from random import randrange
-from os import system
-from platform import system as platform
-import datetime
+from random import randrange #to get a random word
+from os import system # Used to clear the screen
+from platform import system as platform # Used to know the OS to be able to clear the screen
+import datetime #to get the date and time for the score file
 
-if platform() == 'Windows':
-    COMMAND = 'cls'
-elif platform() == 'Linux':
-    COMMAND = 'clear'
-elif platform() == 'Darwin':
-    COMMAND = 'clear'
 # ----------------------------
 # Global variables & constants
 # ----------------------------
+if platform() == 'Windows':
+    COMMAND = 'cls'
+elif platform() == 'Linux' or platform() == 'Darwin':
+    COMMAND = 'clear'
+
 SCORE_PATH = 'score.txt' # Path to the score file
 WORD_PATH = '../répertoire_fichiers_texte_dictée/liste_mots.txt' # Path to the word list
                                                                  # words are separated by a new line
@@ -202,7 +201,21 @@ def printer(usedChar, errorNumber, usedWord, lackingLetter):
 
     :return: type : str the current state of the game
     """
-    return (ErrorPrinter(errorNumber) + "\nLettres qui ont déjà été dites:" + ' '.join(usedChar) + '\nmot actuel :' + usedWord + '\nnombre de lettre à trouver:' + lackingLetter)
+    return (ErrorPrinter(errorNumber) + "\nLettres qui ont déjà été dites:" + ' '.join(usedChar) + '\nmot actuel :' + usedWord + '\nnombre de lettre à trouver:' + str(lackingLetter))
+
+def discoverLetter(letter, word, usedWord):
+    """
+    It checks if the letter is in the word, and if it is, it replaces the corresponding underscores with the letter
+    
+    :param letter: the letter to be checked
+    :param word: the word to be checked
+    :param usedWord: the word that is being guessed
+    :return: the word that is being guessed with the letter added if it was in the word
+    """
+    for i in range(len(word)):
+        if word[i].upper() == letter:
+            usedWord = usedWord[:i] + letter + usedWord[i+1:]
+    return usedWord
 
 def game(wordList):
     """
@@ -213,23 +226,23 @@ def game(wordList):
     usedChar = []
     var = init(wordList)
     lackingLetter = lackingLetterCounter(var['workWord'])
+
     while True:
+
         system(COMMAND)
         print(printer(usedChar, var['errorNumber'], var['workWord'], lackingLetter))
         letter = input("Quelle lettre pensez vous être dans le mot ?\n").upper()
         usedChar.append(letter)
+
         if not letter in var['word'].upper(): #checks if the letter is in the word
             var['errorNumber'] += 1 #if not, it adds one to the error counter
             if var['errorNumber'] >= 11: #if the error counter is 11 or more, the player loses
                 print(ErrorPrinter(var['errorNumber']))
                 print("vous avez perdu cette partie !\n le mot était: ", var['word'])
                 return (0, var['wordList'])
+            
         elif len(letter) == 1: #prevents the user from entering more than one letter
-            for i in range(len(var['word'])):
-                if var['word'][i].upper() == letter:
-                    listedWorkWord = [var['workWord'][:i], var['workWord'][i], var['workWord'][i+1:] ] #replaces the underscore with the letter
-                    listedWorkWord[1] = var['word'][i]
-                    var['workWord'] = ''.join(listedWorkWord)
+            var['workWord'] = discoverLetter(letter, var['word'], var['workWord'])
             lackingLetter = lackingLetterCounter(var['workWord'])
             if lackingLetter <= 0: #if the player has found all the letters, he wins
                 print("vous avez gagné cette partie, le mot été bien: ", var['word'])
