@@ -165,7 +165,10 @@ def WordHidder(word):
 def init(wordList):
     """
     It initializes all the variables for a game
-    :return: A dictionary with the word, the hidden word and the number of error done (here 0 bc it's the beginning of the game)
+    
+    :param wordList: The list of words that the game will use
+    :return: A dictionary with the word, the hidden word and the number of error done (here 0 bc it's
+    the beginning of the game)
     """
     numberOfWord = len(wordList) 
     word, wordList = WordSelector(numberOfWord, wordList)
@@ -201,16 +204,16 @@ def printer(usedChar, errorNumber, usedWord, lackingLetter):
 
     :return: type : str the current state of the game
     """
-    return (ErrorPrinter(errorNumber) + "\nLettres qui ont déjà été dites:" + ' '.join(usedChar) + '\nmot actuel :' + usedWord + '\nnombre de lettre à trouver:' + str(lackingLetter))
+    return (ErrorPrinter(errorNumber) + "\nLettres qui ont déjà été dites : " + ' '.join(usedChar) + '\nmot actuel :' + usedWord + '\nnombre de lettre à trouver : ' + str(lackingLetter))
 
 def discoverLetter(letter, word, usedWord):
     """
     It checks if the letter is in the word, and if it is, it replaces the corresponding underscores with the letter
     
-    :param letter: the letter to be checked
-    :param word: the word to be checked
-    :param usedWord: the word that is being guessed
-    :return: the word that is being guessed with the letter added if it was in the word
+    :param letter: type : str ; len = 1 the letter to be checked
+    :param word: type : str the word to be checked
+    :param usedWord: type : str the word that is being guessed
+    :return: type : str the word that is being guessed with the letter added if it was in the word
     """
     for i in range(len(word)):
         if word[i].upper() == letter:
@@ -221,7 +224,9 @@ def game(wordList):
     """
     It prints the game's status, asks the user for a letter, checks if the letter is in the word, and if
     it is, it replaces the corresponding underscores with the letter
-    :return: the point gained by the player
+    
+    :param wordList: the list of words that the game will choose from
+    :return: a tuple containing the point gained by the player and the word list
     """
     usedChar = []
     var = init(wordList)
